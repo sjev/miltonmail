@@ -138,16 +138,33 @@ def save_attachments_from_message(message: Message, output_dir: Path) -> None:
 
 
 def download_attachments_from_folder(
-    connection: imaplib.IMAP4_SSL, folder: str, output_dir: Path
+    connection: imaplib.IMAP4_SSL,
+    folder: str,
+    output_dir: Path,
+    cutoff_date: str = "20220101",
 ) -> None:
     """
-    Download attachments from the specified folder.
+    Download attachments from emails in the specified folder that are newer than the given cutoff date.
+
+    Parameters
+    ----------
+    connection : imaplib.IMAP4_SSL
+        The IMAP connection object.
+    folder : str
+        The folder to download attachments from (e.g., "INBOX").
+    output_dir : Path
+        The directory where attachments should be saved.
+    cutoff_date : str
+        The cutoff date in 'YYYYMMDD' format. Only messages after this date will be processed.
     """
     log.info(f"Downloading attachments from {folder} to {output_dir}")
+
+    # Select the folder
     status, messages = connection.select(folder)  # pylint: disable=unused-variable
     if status != "OK":
         raise RuntimeError(f"Failed to select folder: {folder}")
 
+    # Search for all messages
     status, message_ids = connection.search(None, "ALL")
     if status != "OK":
         raise RuntimeError(f"Failed to fetch message list from folder: {folder}")
@@ -156,7 +173,12 @@ def download_attachments_from_folder(
 
     log.info(f"Found {len(message_ids)} messages in folder: {folder}")
 
+    # List to hold filtered messages
+    filtered_messages = []
+
+    # Fetch and sort messages by date
     for message_id in message_ids:
+        print(".", end="", flush=True)
         status, msg_data = connection.fetch(message_id, "(RFC822)")
         if status != "OK":
             raise RuntimeError(f"Failed to fetch message with ID: {message_id}")
@@ -164,4 +186,23 @@ def download_attachments_from_folder(
         for response_part in msg_data:
             if isinstance(response_part, tuple):
                 message = email.message_from_bytes(response_part[1])
-                save_attachments_from_message(message, output_dir)
+
+                # Get the date from the message and convert to 'YYYYMMDD' format
+                msg_date = email.utils.parsedate_to_datetime(message["Date"]).strftime(
+                    "%Y%m%d"
+                )
+
+                # Only process messages newer than the cutoff date (as strings)
+                if msg_date > cutoff_date:
+                    filtered_messages.append((msg_date, message))
+
+    print()
+
+    # Sort messages by date (already in string 'YYYYMMDD' format)
+    filtered_messages.sort(key=lambda x: x[0])
+
+    log.info(f"Processing {len(filtered_messages)} messages after {cutoff_date}")
+
+    # Download attachments from filtered messages
+    for _, message in filtered_messages:
+        save_attachments_from_message(message, output_dir)
