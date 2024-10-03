@@ -71,6 +71,8 @@ def get_config() -> Config:
 
 def save_config(config: Config) -> None:
     """Save the configuration to the configuration file."""
+    CONFIG_PATH.mkdir(parents=True, exist_ok=True)
+
     with open(CONFIG_PATH / "config.json", "w", encoding="utf8") as file:
         json.dump(config.to_dict(), file, indent=4)
 

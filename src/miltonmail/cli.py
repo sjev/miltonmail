@@ -28,6 +28,12 @@ def account() -> None:
 @account.command()
 def add() -> None:
     """Add a new account interactively."""
+    # Load current config
+    try:
+        current_config = config.get_config()
+    except FileNotFoundError:
+        current_config = config.Config(accounts=[])
+
     # Collect account details interactively
     name = click.prompt("Account name", type=str)
     server = click.prompt("IMAP server", type=str)
@@ -39,13 +45,6 @@ def add() -> None:
     new_account = config.add_account(
         name=name, server=server, username=username, password=password, port=port
     )
-
-    # Load current config and add new account
-    try:
-        current_config = config.get_config()
-    except FileNotFoundError:
-        current_config = config.Config(accounts=[])
-
     current_config.accounts.append(new_account)
 
     # Save updated config
