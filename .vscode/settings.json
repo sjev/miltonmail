@@ -8,8 +8,7 @@
 
   "[python]": {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.defaultFoldingRangeProvider": "charliermarsh.ruff"
+    "editor.defaultFormatter": "ms-python.black-formatter",
   },
   "yaml.customTags": [
     "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"

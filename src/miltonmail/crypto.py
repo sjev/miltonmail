@@ -28,12 +28,13 @@ def derive_key_from_passphrase(passphrase: str, salt: bytes) -> bytes:
 
 
 # Encrypt the password
-def encrypt_password(password: str, passphrase: str) -> Tuple[bytes, bytes]:
+def encrypt_password(password: str) -> Tuple[bytes, bytes]:
+
     # Generate a random salt
     salt = os.urandom(16)
 
     # Derive key from passphrase
-    key = derive_key_from_passphrase(passphrase, salt)
+    key = derive_key_from_passphrase(get_passphrase(), salt)
 
     # Create cipher
     cipher = Fernet(key)
@@ -45,7 +46,9 @@ def encrypt_password(password: str, passphrase: str) -> Tuple[bytes, bytes]:
 
 
 # Decrypt the password
-def decrypt_password(encrypted_password: bytes, passphrase: str, salt: bytes) -> str:
+def decrypt_password(encrypted_password: bytes, salt: bytes) -> str:
+    passphrase = get_passphrase()
+
     # Derive key from passphrase
     key = derive_key_from_passphrase(passphrase, salt)
 

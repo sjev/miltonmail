@@ -20,7 +20,7 @@ def test_encrypt_decrypt() -> None:
     os.environ["MILTON_PASS"] = PASS
 
     password = "mysecretpassword"
-    encrypted_password, salt = crypto.encrypt_password(password, PASS)
+    encrypted_password, salt = crypto.encrypt_password(password)
 
     assert password != encrypted_password
-    assert password == crypto.decrypt_password(encrypted_password, PASS, salt)
+    assert password == crypto.decrypt_password(encrypted_password, salt)
