@@ -2,12 +2,11 @@ import logging
 import imaplib
 import email
 from email.header import decode_header
-from email.message import Message  # Correct import
+from email.message import Message
 from typing import List
 from pathlib import Path
 import re
 from datetime import datetime
-
 
 log = logging.getLogger(__name__)
 
@@ -38,12 +37,21 @@ def list_folders(connection: imaplib.IMAP4_SSL) -> List[str]:
     return folder_list
 
 
-def get_messages_from_folder(
-    connection: imaplib.IMAP4_SSL, folder: str, limit: int = 10
-) -> List:
+def select_folder(connection: imaplib.IMAP4_SSL, folder: str) -> None:
+    """
+    Selects the folder, handling spaces and special characters by quoting the folder name.
+    """
+    folder = f'"{folder}"' if " " in folder or "/" in folder else folder
     status, messages = connection.select(folder)  # pylint: disable=unused-variable
     if status != "OK":
         raise RuntimeError(f"Failed to select folder: {folder}")
+    log.info(f"Successfully selected folder: {folder}")
+
+
+def get_messages_from_folder(
+    connection: imaplib.IMAP4_SSL, folder: str, limit: int = 10
+) -> List:
+    select_folder(connection, folder)
 
     status, message_ids = connection.search(None, "ALL")
     if status != "OK":
@@ -86,16 +94,11 @@ def format_filename_with_date(message: Message, filename: str) -> str:
     """
     Formats the filename by prepending the date and replacing spaces with underscores.
     """
-    # Get the message date from the email header
     date = email.utils.parsedate_to_datetime(message["Date"]).strftime("%Y%m%d")
 
-    # Replace spaces with underscores
     filename = filename.replace(" ", "_")
-
-    # Prepend the date
     formatted_filename = f"{date}_{filename}"
 
-    # Ensure it's a clean, safe filename
     formatted_filename = re.sub(r"[^A-Za-z0-9_.-]", "", formatted_filename)
 
     return formatted_filename
@@ -105,34 +108,25 @@ def save_attachments_from_message(message: Message, output_dir: Path) -> None:
     """
     Save attachments from an email message to the specified directory.
     Skip the attachment if it already exists in the folder.
-
-    :param message: The email message object.
-    :param output_dir: The directory to save attachments.
     """
-    output_dir.mkdir(parents=True, exist_ok=True)  # Ensure output directory exists
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     for part in message.walk():
-        # Check if the part is an attachment
         if part.get_content_disposition() == "attachment":
             filename = part.get_filename()
             if filename:
-                # Decode the filename if it's MIME-encoded
                 filename = decode_mime_words(filename)
-
-                # Format the filename with the message date and replace spaces with underscores
                 filename = format_filename_with_date(message, filename)
 
                 filepath = output_dir / filename
 
-                # Check if the file already exists
                 if filepath.exists():
                     log.info(f"Attachment already exists: {filename}, skipping...")
                     continue
 
-                # Save the attachment
                 with open(filepath, "wb") as f:
                     payload = part.get_payload(decode=True)
-                    if payload is not None:
+                    if payload:
                         f.write(payload)
 
                 log.info(f"Saved attachment: {filename} to {output_dir}")
@@ -160,16 +154,12 @@ def download_attachments_from_folder(
     """
     log.info(f"Downloading attachments from {folder} to {output_dir}")
 
-    # Select the folder
-    status, messages = connection.select(folder)  # pylint: disable=unused-variable
-    if status != "OK":
-        raise RuntimeError(f"Failed to select folder: {folder}")
+    # Select the folder, handle folder names with spaces
+    select_folder(connection, folder)
 
-    # Convert cutoff_date to IMAP's date format (DD-MMM-YYYY)
     cutoff_datetime = datetime.strptime(cutoff_date, "%Y%m%d")
     imap_cutoff_date = cutoff_datetime.strftime("%d-%b-%Y")
 
-    # Search for messages that are newer than the cutoff date
     search_query = f"SINCE {imap_cutoff_date}"
     status, message_ids = connection.search(None, search_query)
     if status != "OK":
@@ -185,10 +175,8 @@ def download_attachments_from_folder(
         f"Found {len(message_ids)} messages after {cutoff_date} in folder: {folder}"
     )
 
-    # Reverse the list of message IDs to process the newest first
     message_ids.reverse()
 
-    # Process each message
     for message_id in message_ids:
         status, msg_data = connection.fetch(message_id, "(RFC822)")
         if status != "OK":
