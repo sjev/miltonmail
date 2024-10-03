@@ -33,10 +33,10 @@ optional-dependencies = {dev = { file = ["requirements-dev.txt"] }}
 
 
 [project.urls]
-Homepage = "https://gitlab.com/sjev/miltonmail"
+Homepage = "https://github.com/sjev/miltonmail"
 
 [project.scripts]
-miltonmail = "miltonmail.cli:cli"
+milton = "miltonmail.cli:cli"
 
 
 [tool.setuptools_scm]
