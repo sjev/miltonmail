@@ -26,7 +26,7 @@ def cli() -> None:
 @cli.command()
 def info() -> None:
     """display configration information"""
-    echo(f"Configuration path: {config.CONFIG_PATH}")
+    echo(f"Configuration path: {config.DB_PATH}")
 
     try:
         current_account = config.get_current_account_name()

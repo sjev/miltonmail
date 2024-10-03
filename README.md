@@ -8,6 +8,7 @@ Set of IMAP tools to automate boring mail management tasks
 
 * configuration is stored at\s `~/.config/milton`
 * passwords are protected with a passphrase. Set `MILTON_PASS` env variable.
+* current account to work with is set with `MILTON_ACCOUNT` env variable.
 
 
 

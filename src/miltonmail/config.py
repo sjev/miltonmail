@@ -10,7 +10,7 @@ from typing import List
 from miltonmail.crypto import decrypt_password, encrypt_password
 
 # Path to the configuration file
-CONFIG_PATH = Path.home() / ".config" / "milton"
+DB_PATH = Path.home() / "miltonmail"
 
 
 @dataclass
@@ -80,16 +80,16 @@ def get_current_account_name() -> str:
 
 def get_config() -> Config:
     """Get the configuration from the configuration file."""
-    with open(CONFIG_PATH / "config.json", "r", encoding="utf8") as file:
+    with open(DB_PATH / "config.json", "r", encoding="utf8") as file:
         config_dict = json.load(file)
     return Config.from_dict(config_dict)
 
 
 def save_config(config: Config) -> None:
     """Save the configuration to the configuration file."""
-    CONFIG_PATH.mkdir(parents=True, exist_ok=True)
+    DB_PATH.mkdir(parents=True, exist_ok=True)
 
-    with open(CONFIG_PATH / "config.json", "w", encoding="utf8") as file:
+    with open(DB_PATH / "config.json", "w", encoding="utf8") as file:
         json.dump(config.to_dict(), file, indent=4)
 
 

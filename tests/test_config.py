@@ -14,15 +14,15 @@ os.system("rm -rf /tmp/milton")
 
 def test_config_path() -> None:
     """Test if the configuration path is correctly set."""
-    assert config.CONFIG_PATH == Path.home() / ".config" / "milton"
+    assert config.DB_PATH == Path.home() / "miltonmail"
 
 
 def test_config_file_not_found() -> None:
     """Test if the config file raises FileNotFoundError when not present."""
 
     # Temporarily change location of config data to /tmp
-    config.CONFIG_PATH = Path("/tmp/milton")
-    pth = Path(config.CONFIG_PATH)
+    config.DB_PATH = Path("/tmp/milton")
+    pth = Path(config.DB_PATH)
 
     # Ensure the directory exists
     pth.mkdir(parents=True, exist_ok=True)
@@ -36,8 +36,8 @@ def test_save_and_get_config() -> None:
     """Test saving and loading configuration."""
 
     # Temporarily change location of config data to /tmp
-    config.CONFIG_PATH = Path("/tmp/milton")
-    pth = Path(config.CONFIG_PATH)
+    config.DB_PATH = Path("/tmp/milton")
+    pth = Path(config.DB_PATH)
 
     # Ensure the directory exists
     pth.mkdir(parents=True, exist_ok=True)
@@ -99,8 +99,8 @@ def test_saving_loading_with_salt() -> None:
     """Test if saving and loading an account with a salt works properly."""
 
     # Temporarily change location of config data to /tmp
-    config.CONFIG_PATH = Path("/tmp/milton")
-    pth = Path(config.CONFIG_PATH)
+    config.DB_PATH = Path("/tmp/milton")
+    pth = Path(config.DB_PATH)
     pth.mkdir(parents=True, exist_ok=True)
 
     # Create account with generated salt
