@@ -1,5 +1,6 @@
 """ configuration stuff """
 
+import os
 import base64
 import json
 from dataclasses import asdict, dataclass, field
@@ -57,9 +58,24 @@ class Config:
         accounts = [Account(**account) for account in config_dict.get("accounts", [])]
         return Config(accounts=accounts)
 
+    def get_account(self, name: str) -> Account:
+        """Get an account by name."""
+        for account in self.accounts:
+            if account.name == name:
+                return account
+        raise ValueError(f"Account '{name}' not found.")
+
     def to_dict(self) -> dict:
         """Converts the Config instance back to a dictionary and encrypts passwords."""
         return {"accounts": [account.to_dict() for account in self.accounts]}
+
+
+def get_current_account_name() -> str:
+    """Get the name of the account to use."""
+    account_name = os.getenv("MILTON_ACCOUNT")
+    if account_name is None:
+        raise ValueError("No account set. Set the MILTON_ACCOUNT environment variable.")
+    return account_name
 
 
 def get_config() -> Config:

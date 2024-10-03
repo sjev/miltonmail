@@ -2,12 +2,12 @@
 """
 miltonmail CLI
 """
-import json
 
 import click
 from click import echo
 
 from miltonmail import __version__, config, crypto
+
 
 # check if passphrase is set
 try:
@@ -27,21 +27,16 @@ def cli() -> None:
 def info() -> None:
     """display configration information"""
     echo(f"Configuration path: {config.CONFIG_PATH}")
+
     try:
-        cfg = config.get_config()
-        echo("------------Configuration------------")
-        echo(json.dumps(cfg.to_dict(), indent=4))
-    except FileNotFoundError:
-        echo("No configuration file found.")
+        current_account = config.get_current_account_name()
+        echo(f"Current account: {current_account}")
+    except ValueError as e:
+        echo(str(e))
 
 
-@cli.group()
-def account() -> None:
-    """Manage accounts."""
-
-
-@account.command()
-def add() -> None:
+@cli.command()
+def add_account() -> None:
     """Add a new account interactively."""
     # Load current config
     try:
@@ -68,7 +63,12 @@ def add() -> None:
     click.echo(f"Account '{name}' added successfully!")
 
 
-@account.command("list")
+@cli.group()
+def show() -> None:
+    """show info, see subcommands"""
+
+
+@show.command("accounts")
 def list_accounts() -> None:
     """List all existing accounts."""
     try:
