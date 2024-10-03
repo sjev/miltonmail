@@ -1,0 +1,18 @@
+{
+  "template": "https://gitlab.com/roxautomation/templates/python-package",
+  "commit": "6a799e12e8a4ede5ad6454ed88996114462ddfec",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "author_name": "Jev Kuznetsov",
+      "author_email": "jev.kuznetsov@gmail.com",
+      "gitlab_path": "sjev",
+      "project_name": "MiltonMailer",
+      "project_slug": "miltonmail",
+      "package_name": "miltonmail",
+      "project_short_description": "Set of IMAP tools to automate boring mail management tasks",
+      "_template": "https://gitlab.com/roxautomation/templates/python-package"
+    }
+  },
+  "directory": null
+}

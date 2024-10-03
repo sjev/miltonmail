@@ -1,0 +1,83 @@
+#-----------------pyproject.toml configuration----------------
+[build-system]
+requires = ["setuptools >= 61.0", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "miltonmail"
+dynamic = ["dependencies", "optional-dependencies","version"]
+description = "Set of IMAP tools to automate boring mail management tasks"
+authors = [
+    {name = "Jev Kuznetsov", email = "jev.kuznetsov@gmail.com"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+requires-python = ">=3.12"
+
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies = {dev = { file = ["requirements-dev.txt"] }}
+
+
+
+[project.urls]
+Homepage = "https://gitlab.com/sjev/miltonmail"
+
+[project.scripts]
+miltonmail = "miltonmail.cli:cli"
+
+
+[tool.setuptools_scm]
+fallback_version = "0.0.0+unknown"
+
+#--------------mypy configuration----------------
+[tool.mypy]
+# Global options can be specified here
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+
+
+#-----------------pytest configuration----------------
+[tool.pytest.ini_options]
+filterwarnings = "ignore::DeprecationWarning:dateutil.*"
+
+log_cli = false
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%H:%M:%S"
+
+#-----------------coverage configuration----------------
+[tool.coverage.run]
+omit = [
+    "tests/*",
+]
+
+#------------------pylint configuration----------------
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "invalid-name",
+    "logging-fstring-interpolation",
+    "unused-argument",
+    "import-outside-toplevel",
+    "broad-except",
+    "line-too-long",
+    "useless-super-delegation",
+]
+[tool.pylint.typecheck]
+ignored-modules = ["orjson"]
