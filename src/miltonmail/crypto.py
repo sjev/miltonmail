@@ -4,12 +4,13 @@
 
  Copyright (c) 2024 Jev Kuznetsov
 """
-from typing import Tuple
 import os
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives import hashes
-from cryptography.fernet import Fernet
 from base64 import urlsafe_b64encode
+from typing import Tuple
+
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 def get_passphrase() -> str:
