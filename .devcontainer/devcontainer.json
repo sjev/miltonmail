@@ -5,12 +5,12 @@
 
   "mounts": [
     "source=/var/tmp/container-extensions,target=/home/dev/.vscode-server/extensions,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/miltonmail,target=/home/dev/milton,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/miltonmail,target=/home/dev/miltonmail,type=bind,consistency=cached"
   ],
 
-  "containerEnv": {
-    "MILTON_PASS" : "secret-passphrase"
-  },
+  // "containerEnv": {
+  //   "MILTON_PASS" : "secret-passphrase"
+  // },
 
 
   // Configure tool-specific properties.

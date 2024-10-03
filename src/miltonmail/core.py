@@ -1,7 +1,11 @@
+import logging
 import imaplib
 import email
 from email.header import decode_header
 from typing import List
+
+
+log = logging.getLogger(__name__)
 
 
 def login_to_imap(
@@ -22,8 +26,9 @@ def list_folders(connection: imaplib.IMAP4_SSL) -> List[str]:
 
     folder_list = []
     for folder in folders:
+        log.debug(f"{folder=}")
         if isinstance(folder, bytes):
-            folder_name = folder.decode().split(' "/" ')[-1]
+            folder_name = folder.decode().split(' "." ')[-1]
             folder_list.append(folder_name)
 
     return folder_list

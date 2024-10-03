@@ -2,12 +2,18 @@
 """
 miltonmail CLI
 """
+import os
 
 import click
+import coloredlogs
 from click import echo
 
-from miltonmail import __version__, config, crypto
+from miltonmail import __version__, config, core, crypto
 
+LOGLEVEL: str = os.environ.get("LOGLEVEL", "INFO").upper()
+LOG_FORMAT: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+coloredlogs.install(level=LOGLEVEL, fmt=LOG_FORMAT)
 
 # check if passphrase is set
 try:
@@ -85,6 +91,19 @@ def list_accounts() -> None:
 
     except FileNotFoundError:
         click.echo("No configuration file found. No accounts have been added yet.")
+
+
+@show.command("folders")
+def show_folders() -> None:
+    """List all folders for the current account"""
+    acc = config.get_current_account()
+
+    conn = core.login_to_imap(
+        acc.server, acc.username, acc.decrypt_password(), acc.port
+    )
+    folders = core.list_folders(conn)
+    for folder in folders:
+        click.echo(folder)
 
 
 if __name__ == "__main__":

@@ -70,14 +70,6 @@ class Config:
         return {"accounts": [account.to_dict() for account in self.accounts]}
 
 
-def get_current_account_name() -> str:
-    """Get the name of the account to use."""
-    account_name = os.getenv("MILTON_ACCOUNT")
-    if account_name is None:
-        raise ValueError("No account set. Set the MILTON_ACCOUNT environment variable.")
-    return account_name
-
-
 def get_config() -> Config:
     """Get the configuration from the configuration file."""
     with open(DB_PATH / "config.json", "r", encoding="utf8") as file:
@@ -103,3 +95,18 @@ def add_account(
     )
     account.encrypt_password(password)  # Encrypt and store the password and salt
     return account
+
+
+def get_current_account_name() -> str:
+    """Get the name of the account to use."""
+    account_name = os.getenv("MILTON_ACCOUNT")
+    if account_name is None:
+        raise ValueError("No account set. Set the MILTON_ACCOUNT environment variable.")
+    return account_name
+
+
+def get_current_account() -> Account:
+    """Get the account to use."""
+    account_name = get_current_account_name()
+    config = get_config()
+    return config.get_account(account_name)
