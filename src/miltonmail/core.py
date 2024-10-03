@@ -107,7 +107,9 @@ def save_attachments_from_message(message: Message, output_dir: Path) -> None:
 
                 # Save the attachment
                 with open(filepath, "wb") as f:
-                    f.write(part.get_payload(decode=True))
+                    payload = part.get_payload(decode=True)
+                    if payload is not None:
+                        f.write(payload)
 
                 log.info(f"Saved attachment: {filename} to {output_dir}")
 
