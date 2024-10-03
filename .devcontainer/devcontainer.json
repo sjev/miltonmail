@@ -4,7 +4,8 @@
   "image": "sjev/python-dev",
 
   "mounts": [
-    "source=/var/tmp/container-extensions,target=/home/dev/.vscode-server/extensions,type=bind,consistency=cached"
+    "source=/var/tmp/container-extensions,target=/home/dev/.vscode-server/extensions,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/milton,target=/home/dev/.config/milton,type=bind,consistency=cached"
   ],
 
   "containerEnv": {

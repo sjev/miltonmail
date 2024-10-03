@@ -2,8 +2,11 @@
 """
 miltonmail CLI
 """
+import json
 
 import click
+from click import echo
+
 from miltonmail import __version__, config, crypto
 
 # check if passphrase is set
@@ -18,6 +21,18 @@ except ValueError:
 @click.version_option(version=__version__)
 def cli() -> None:
     """Main entry point for Milton CLI."""
+
+
+@cli.command()
+def info() -> None:
+    """display configration information"""
+    echo(f"Configuration path: {config.CONFIG_PATH}")
+    try:
+        cfg = config.get_config()
+        echo("------------Configuration------------")
+        echo(json.dumps(cfg.to_dict(), indent=4))
+    except FileNotFoundError:
+        echo("No configuration file found.")
 
 
 @cli.group()
