@@ -113,18 +113,30 @@ def get_items() -> None:
 
 @get_items.command("attachments")
 @click.argument("folder")
-def get_attachments(folder: str) -> None:
+@click.option(
+    "--cutoff-date",
+    default="20220101",
+    help="Only download attachments from messages after this date (format: YYYYMMDD).",
+)
+def get_attachments(folder: str, cutoff_date: str) -> None:
     """Download attachments from imap folder to current DB_PATH/<account_name>/attachments"""
 
+    # Retrieve current account configuration
     acc = config.get_current_account()
 
+    # Set the destination folder for attachments
     dest = config.DB_PATH / acc.name / "attachments"
     dest.mkdir(parents=True, exist_ok=True)
 
+    # Log in to IMAP server
     conn = core.login_to_imap(
         acc.server, acc.username, acc.decrypt_password(), acc.port
     )
-    core.download_attachments_from_folder(conn, folder, output_dir=dest)
+
+    # Download attachments, passing the cutoff date
+    core.download_attachments_from_folder(
+        conn, folder, output_dir=dest, cutoff_date=cutoff_date
+    )
 
 
 if __name__ == "__main__":
