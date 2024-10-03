@@ -7,6 +7,10 @@ PASS = "mysecretpassphrase"
 
 
 def test_phrase() -> None:
+
+    # unset the passphrase
+    os.environ["MILTON_PASS"] = ""
+
     with pytest.raises(ValueError):
         crypto.get_passphrase()
 
