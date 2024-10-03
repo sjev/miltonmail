@@ -28,7 +28,7 @@ def list_folders(connection: imaplib.IMAP4_SSL) -> List[str]:
     for folder in folders:
         log.debug(f"{folder=}")
         if isinstance(folder, bytes):
-            folder_name = folder.decode().split(' "." ')[-1]
+            folder_name = folder.decode().split(" ")[-1]
             folder_list.append(folder_name)
 
     return folder_list
