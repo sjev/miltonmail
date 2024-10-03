@@ -110,3 +110,15 @@ def get_current_account() -> Account:
     account_name = get_current_account_name()
     config = get_config()
     return config.get_account(account_name)
+
+
+def set_password(account_name: str, password: str) -> None:
+    """Set the password for the specified account."""
+    config = get_config()
+    account = config.get_account(account_name)
+    account.encrypt_password(password)
+    save_config(config)
+
+    # check decryption
+    account = get_config().get_account(account_name)
+    assert account.decrypt_password() == password
