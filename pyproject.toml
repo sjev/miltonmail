@@ -79,6 +79,7 @@ disable = [
     "broad-except",
     "line-too-long",
     "useless-super-delegation",
+    "redefined-outer-name",
 ]
 [tool.pylint.typecheck]
 ignored-modules = ["orjson"]

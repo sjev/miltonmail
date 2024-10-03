@@ -7,12 +7,9 @@
     "source=/var/tmp/container-extensions,target=/home/dev/.vscode-server/extensions,type=bind,consistency=cached"
   ],
 
-
-  // Features to add to the dev container. More info: https://containers.dev/implementors/features.
-  // "features": {},
-
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  "containerEnv": {
+    "MILTON_PASS" : "secret-passphrase"
+  },
 
 
   // Configure tool-specific properties.
@@ -32,6 +29,5 @@
     }
   }
 
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+
 }
