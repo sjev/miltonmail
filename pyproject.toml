@@ -63,6 +63,7 @@ log_cli_date_format = "%H:%M:%S"
 [tool.coverage.run]
 omit = [
     "tests/*",
+    "src/miltonmail/cli.py",
 ]
 
 #------------------pylint configuration----------------
