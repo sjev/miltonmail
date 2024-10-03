@@ -5,6 +5,7 @@ from email.header import decode_header
 from email.message import Message  # Correct import
 from typing import List
 from pathlib import Path
+import re
 
 
 log = logging.getLogger(__name__)
@@ -80,6 +81,25 @@ def decode_mime_words(text: str) -> str:
     return "".join(decoded_fragments)
 
 
+def format_filename_with_date(message: Message, filename: str) -> str:
+    """
+    Formats the filename by prepending the date and replacing spaces with underscores.
+    """
+    # Get the message date from the email header
+    date = email.utils.parsedate_to_datetime(message["Date"]).strftime("%Y%m%d")
+
+    # Replace spaces with underscores
+    filename = filename.replace(" ", "_")
+
+    # Prepend the date
+    formatted_filename = f"{date}_{filename}"
+
+    # Ensure it's a clean, safe filename
+    formatted_filename = re.sub(r"[^A-Za-z0-9_.-]", "", formatted_filename)
+
+    return formatted_filename
+
+
 def save_attachments_from_message(message: Message, output_dir: Path) -> None:
     """
     Save attachments from an email message to the specified directory.
@@ -97,6 +117,9 @@ def save_attachments_from_message(message: Message, output_dir: Path) -> None:
             if filename:
                 # Decode the filename if it's MIME-encoded
                 filename = decode_mime_words(filename)
+
+                # Format the filename with the message date and replace spaces with underscores
+                filename = format_filename_with_date(message, filename)
 
                 filepath = output_dir / filename
 
