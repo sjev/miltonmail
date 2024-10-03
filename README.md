@@ -4,6 +4,11 @@
 
 Set of IMAP tools to automate boring mail management tasks
 
+## How it works
+
+* configuration is stored at `~/.milton
+* passwords are protected with a passphrase. Set `MILTON_PASS` env variable.
+
 
 
 ## Development
@@ -18,4 +23,3 @@ Set of IMAP tools to automate boring mail management tasks
 * Verisoning : `setuptools_scm`
 * Linting and formatting : `ruff`
 * Typechecking: `mypy`
-

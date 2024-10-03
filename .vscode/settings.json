@@ -16,7 +16,7 @@
   ],
   "fileHeaderComment.parameter": {
     "*": {
-      "company": "Jev Kuznetsov",
+      "company": "",
       "pybang": "#!/usr/bin/env python3"
     }
   },
