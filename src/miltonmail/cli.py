@@ -11,7 +11,7 @@ from click import echo
 from miltonmail import __version__, config, core, crypto
 
 LOGLEVEL: str = os.environ.get("LOGLEVEL", "INFO").upper()
-LOG_FORMAT: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+LOG_FORMAT: str = "%(asctime)s - %(levelname)s - %(message)s"
 
 coloredlogs.install(level=LOGLEVEL, fmt=LOG_FORMAT)
 
