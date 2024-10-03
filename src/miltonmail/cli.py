@@ -106,5 +106,26 @@ def show_folders() -> None:
         click.echo(folder)
 
 
+@cli.group("get")
+def get_items() -> None:
+    """get items, see subcommands"""
+
+
+@get_items.command("attachments")
+@click.argument("folder")
+def get_attachments(folder: str) -> None:
+    """Download attachments from imap folder to current DB_PATH/<account_name>/attachments"""
+
+    acc = config.get_current_account()
+
+    dest = config.DB_PATH / acc.name / "attachments"
+    dest.mkdir(parents=True, exist_ok=True)
+
+    conn = core.login_to_imap(
+        acc.server, acc.username, acc.decrypt_password(), acc.port
+    )
+    core.download_attachments_from_folder(conn, folder, output_dir=dest)
+
+
 if __name__ == "__main__":
     cli()
